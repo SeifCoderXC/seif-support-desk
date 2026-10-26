@@ -2,9 +2,9 @@
 
 A local customer-support desk. The agent reads the device, sends a careful reply, and waits while the customer tries that step and writes back what the screen did.
 
-Seif is a sample project you can run on your own machine. It is a portfolio piece for hiring managers and anyone else who wants to see the work. It is not a NordVPN product, not CyberCare, and not a live helpdesk.
+A local customer-support desk is a sample project you can run on your own machine. It is a portfolio piece for  anyone else who wants to see the work. It is not a NordVPN product, and not a live helpdesk.
 
-## For a hiring manager
+## For a READER
 
 You do not have to install anything to see the point of the project. Watch the short film, then read the stills under it.
 
