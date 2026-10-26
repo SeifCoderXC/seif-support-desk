@@ -1,4 +1,4 @@
-# Seif
+# A local customer-support desk
 
 A local customer-support desk. The agent reads the device, sends a careful reply, and waits while the customer tries that step and writes back what the screen did.
 
