@@ -1,0 +1,98 @@
+generator client {
+  provider      = "prisma-client-js"
+  binaryTargets = ["native", "linux-musl-openssl-3.0.x"]
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum TicketStatus {
+  open
+  pending
+  resolved
+}
+
+enum TicketPriority {
+  low
+  normal
+  high
+  urgent
+}
+
+enum AuthorType {
+  customer
+  agent
+}
+
+model Agent {
+  id           String    @id
+  email        String    @unique
+  name         String
+  passwordHash String
+  assigned     Ticket[]  @relation("Assignee")
+  messages     Message[]
+  drafts       Draft[]
+  createdAt    DateTime  @default(now())
+}
+
+model Customer {
+  id         String   @id
+  name       String
+  email      String   @unique
+  plan       String
+  platform   String
+  appVersion String
+  country    String
+  notes      String
+  tickets    Ticket[]
+}
+
+model Ticket {
+  id             String         @id
+  subject        String
+  status         TicketStatus
+  priority       TicketPriority
+  channelId      String
+  productId      String
+  scenarioKey    String
+  customerId     String
+  customer       Customer       @relation(fields: [customerId], references: [id])
+  assigneeId     String?
+  assignee       Agent?         @relation("Assignee", fields: [assigneeId], references: [id])
+  messages       Message[]
+  drafts         Draft[]
+  simulation     Json           @default("{}")
+  createdAt      DateTime
+  lastActivityAt DateTime
+  updatedAt      DateTime       @updatedAt
+
+  @@index([lastActivityAt])
+}
+
+model Message {
+  id         String     @id
+  ticketId   String
+  ticket     Ticket     @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  authorType AuthorType
+  authorName String
+  agentId    String?
+  agent      Agent?     @relation(fields: [agentId], references: [id])
+  body       String
+  createdAt  DateTime
+
+  @@index([ticketId, createdAt])
+}
+
+model Draft {
+  id        String   @id
+  ticketId  String
+  ticket    Ticket   @relation(fields: [ticketId], references: [id], onDelete: Cascade)
+  agentId   String
+  agent     Agent    @relation(fields: [agentId], references: [id], onDelete: Cascade)
+  body      String
+  updatedAt DateTime @updatedAt
+
+  @@unique([ticketId, agentId])
+}

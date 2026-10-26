@@ -1,0 +1,35 @@
+services:
+  db:
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: console
+      POSTGRES_PASSWORD: console
+      POSTGRES_DB: support_console
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U console -d support_console"]
+      interval: 5s
+      timeout: 5s
+      retries: 20
+
+  app:
+    build: .
+    environment:
+      DATABASE_URL: postgresql://console:console@db:5432/support_console?schema=public
+      JWT_SECRET: ${JWT_SECRET:-local-dev-only-change-me}
+      SEED_AGENT_PASSWORD: ${SEED_AGENT_PASSWORD:-support-local}
+      PORT: 3000
+      XAI_API_KEY: ${XAI_API_KEY:-}
+      XAI_MODEL: ${XAI_MODEL:-}
+      ANTHROPIC_API_KEY: ${ANTHROPIC_API_KEY:-}
+      ANTHROPIC_MODEL: ${ANTHROPIC_MODEL:-}
+      CUSTOMER_AI: ${CUSTOMER_AI:-}
+    depends_on:
+      db:
+        condition: service_healthy
+    ports:
+      - "${PORT:-3000}:3000"
+
+volumes:
+  pgdata:

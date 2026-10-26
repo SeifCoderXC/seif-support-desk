@@ -1,0 +1,7 @@
+node_modules
+dist
+.env
+*.log
+frontend/dist
+api/dist
+portfolio/VIDEO-PROMPT.md
